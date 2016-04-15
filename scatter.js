@@ -5,7 +5,7 @@ var x = d3.scale.linear()
     .range([0, width]);
 var y = d3.scale.linear()
     .range([height, 0]);
-var svg = d3.select("body").append("svg")
+var svg = d3.select("body").select(".plot").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -13,6 +13,19 @@ var svg = d3.select("body").append("svg")
 
 var dataset = [];
 d3.csv('car.csv', function(data) {
+
+  var columnNames = Object.keys(data[0]);
+
+  var listX = d3.select("#sel-x").selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
+      .attr("value",function(d){return d;});
+
+  var listY = d3.select("#sel-y").selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
+      .attr("value",function(d){return d;});
+
+  var sel1 = document.getElementById("sel-x");
+  var sel2 = document.getElementById("sel-y");
+  console.log(sel1)
+  console.log(sel2)
 
   data.forEach(function(d){
 
@@ -51,6 +64,6 @@ d3.csv('car.csv', function(data) {
 
 
 
-  console.log(dataset)
+  //console.log(dataset)
 
   });
