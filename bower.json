@@ -1,0 +1,17 @@
+{
+  "name": "lab9",
+  "homepage": "https://github.com/ass502/ds1004-lab9",
+  "authors": [
+    "Akash Shah and Aditi Nair"
+  ],
+  "description": "ass502 + asn264 submission",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
