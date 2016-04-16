@@ -15,6 +15,10 @@ var dataset = [];
 d3.csv('car.csv', function(data) {
 
   var columnNames = Object.keys(data[0]);
+  //columnNames.splice(1,columnNames.length-1);
+  columnNames.splice(0,1);
+  columnNames.splice(columnNames.length-1);
+  console.log(columnNames)
 
   var listX = d3.select("#sel-x").selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
       .attr("value",function(d){return d;});
@@ -22,10 +26,8 @@ d3.csv('car.csv', function(data) {
   var listY = d3.select("#sel-y").selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
       .attr("value",function(d){return d;});
 
-  var sel1 = document.getElementById("sel-x");
-  var sel2 = document.getElementById("sel-y");
-  console.log(sel1)
-  console.log(sel2)
+  var sel1 = d3.select("#sel-x").node().value;
+  var sel2 = d3.select("#sel-y").node().value;
 
   data.forEach(function(d){
 
@@ -43,8 +45,8 @@ d3.csv('car.csv', function(data) {
   });
   
   // Compute the scales’ domains.
-  x.domain(d3.extent(dataset, function(d) { return d.mpg; })).nice();
-  y.domain(d3.extent(dataset, function(d) { return d.cylinders; })).nice();
+  x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
+  y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
   // Add the x-axis.
   svg.append("g")
       .attr("class", "x axis")
@@ -60,7 +62,7 @@ d3.csv('car.csv', function(data) {
     .enter().append("path")
       .attr("class", "point")
       .attr("d", d3.svg.symbol().type("triangle-up"))
-      .attr("transform", function(d) { return "translate(" + x(d.mpg) + "," + y(d.cylinders) + ")"; });
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
 
 
 
