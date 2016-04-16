@@ -12,35 +12,13 @@ var xchange = function() {
   //Join new data with old elements
   var pts = svg.selectAll(".point").data(dataset);
 
+  //pts.enter().append("class", "old");
+
   pts.attr("class", "point")
-      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("d", d3.svg.symbol().type("circle"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
 
-  /*
-  //Update old elements as needed
-  pts.attr("class", "update").remove();
-
-  //Enter: create new elements
-  pts.enter().append("path")
-      .attr("class", "point")
-      .attr("d", d3.svg.symbol().type("triangle-up"))
-      .attr("transform", function(d) { return "translate(" + x(d[new_sel1]) + "," + y(d[sel2]) + ")"; });
-  */
-  //pts.remove();
-
-  //pts.exit().remove();
-
-  /*
-  // Add the points!
-  svg.selectAll(".point")
-      .data(dataset)
-    .enter().append("path")
-      .attr("class", "point")
-      .attr("d", d3.svg.symbol().type("triangle-up"))
-      .attr("transform", function(d) { return "translate(" + x(d[new_sel1]) + "," + y(d[sel2]) + ")"; });
-
-   */   
-  //svg.selectAll('.point').remove()
+  //pts.exit().transition().attr("old").remove();
 
 };
 
@@ -58,9 +36,13 @@ var ychange = function() {
   //Join new data with old elements
   var pts = svg.selectAll(".point").data(dataset);
 
+  //pts.enter().append("class", "old");
+
   pts.attr("class", "point")
-      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("d", d3.svg.symbol().type("circle"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
+
+  //pts.exit().transition().attr("old").remove();
 
 };
 
@@ -132,12 +114,10 @@ d3.csv('car.csv', function(data) {
   svg.append("g")
       .attr("class", "x_axis")
       .attr("transform", "translate(0," + height + ")")
-      //.call(d3.svg.axis().scale(x).orient("bottom"));
       .call(xAxis);
   // Add the y-axis.
   svg.append("g")
       .attr("class", "y_axis")
-      //.call(d3.svg.axis().scale(y).orient("left"));
       .call(yAxis);
 
   // Add the points
@@ -145,7 +125,7 @@ d3.csv('car.csv', function(data) {
       .data(dataset)
     .enter().append("path")
       .attr("class", "point")
-      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("d", d3.svg.symbol().type("circle"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
 
   });
