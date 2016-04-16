@@ -134,14 +134,12 @@ d3.csv('car.csv', function(data) {
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; })
       //.attr("test", function(d) {return d["name"]})
       .on("mouseover", function(d) {
-          d3.select('#hovered').text(d["name"]);
-          //attr("text", function() { return d["name"]; });
+          d3.select('#hovered').text('Car name: ' + d["name"]);
       })
-      //.on("mouseout", function(d) {
-      //    tooltip.transition()
-      //         .duration(500)
-      //         .style("opacity", 0);
-      //});
+      .on("mouseout", function(d){
+          d3.select('#hovered').text('Roll over a point to see it\'s car name.');
+          //console.log(10)
+      });
   });
 
 
