@@ -1,3 +1,47 @@
+var xchange = function() {
+
+  console.log(5)
+
+  var new_sel1 = this.value
+  //Compute x scale domain
+  x.domain(d3.extent(dataset, function(d) { return d[new_sel1]; })).nice();
+  //Add the x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.svg.axis().scale(x).orient("bottom"));
+  //Add the points!
+  svg.selectAll(".point")
+      .data(dataset)
+    .enter().append("path")
+      .attr("class", "point")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) { return "translate(" + x(d[new_sel1]) + "," + y(d[sel2]) + ")"; });
+};
+
+
+var ychange = function() {
+
+  console.log(10)
+
+  var new_sel2 = this.value
+  //Compute y scale domain
+  y.domain(d3.extent(dataset, function(d) { return d[new_sel2]; })).nice();
+  //Add the y axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(d3.svg.axis().scale(y).orient("left"));
+  //Add the points
+  svg.selectAll(".point")
+      .data(dataset)
+    .enter().append("path")
+      .attr("class", "point")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[new_sel2]) + ")"; });
+};
+
+
+//Start building the page
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -15,17 +59,17 @@ var dataset = [];
 d3.csv('car.csv', function(data) {
 
   var columnNames = Object.keys(data[0]);
-  //columnNames.splice(1,columnNames.length-1);
   columnNames.splice(0,1);
   columnNames.splice(columnNames.length-1);
   console.log(columnNames)
 
-  var listX = d3.select("#sel-x").selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
+  var listX = d3.select("#sel-x").on('change',xchange).selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
       .attr("value",function(d){return d;});
 
-  var listY = d3.select("#sel-y").selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
+  var listY = d3.select("#sel-y").on('change',ychange).selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
       .attr("value",function(d){return d;});
 
+  //draw the plot once with default values
   var sel1 = d3.select("#sel-x").node().value;
   var sel2 = d3.select("#sel-y").node().value;
 
@@ -44,6 +88,7 @@ d3.csv('car.csv', function(data) {
 
   });
   
+  //Draw the plot once with default values:
   // Compute the scales’ domains.
   x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
   y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
@@ -64,8 +109,5 @@ d3.csv('car.csv', function(data) {
       .attr("d", d3.svg.symbol().type("triangle-up"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
 
-
-
-  //console.log(dataset)
-
   });
+
