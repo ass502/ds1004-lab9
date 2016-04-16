@@ -1,15 +1,15 @@
 var xchange = function() {
 
   var new_sel1 = this.value
+  
   //Compute x scale domain
   x.domain(d3.extent(dataset, function(d) { return d[new_sel1]; })).nice();
 
-  //var xaxis = d3.select('.plot').select('svg').select('.x axis').selectAll('.tick').data(10)
 
-  var xaxis = svg.select("g")
-  //.select(".x_axis").selectAll(".tick")
+  svg.select(".x_axis") // change the x axis
+    .call(xAxis);
 
-  console.log(xaxis)
+  //console.log(xaxis)
 
 
 
@@ -23,10 +23,17 @@ var ychange = function() {
   var new_sel2 = this.value
   //Compute y scale domain
   y.domain(d3.extent(dataset, function(d) { return d[new_sel2]; })).nice();
+
+  svg.select(".y_axis") // change the x axis
+    .call(yAxis);
+
+  /*
   //Add the y axis
   svg.append("g")
       .attr("class", "y_axis")
       .call(d3.svg.axis().scale(y).orient("left"));
+  */
+
   //Add the points
   svg.selectAll(".point")
       .data(dataset)
@@ -34,6 +41,7 @@ var ychange = function() {
       .attr("class", "point")
       .attr("d", d3.svg.symbol().type("triangle-up"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[new_sel2]) + ")"; });
+
 };
 
 
@@ -43,7 +51,7 @@ var ychange = function() {
 var sel1 = 0
 var sel2 = 0
 
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 var x = d3.scale.linear()
@@ -55,6 +63,13 @@ var svg = d3.select("body").select(".plot").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left");
 
 var dataset = [];
 d3.csv('car.csv', function(data) {
@@ -92,15 +107,20 @@ d3.csv('car.csv', function(data) {
   // Compute the scales’ domains.
   x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
   y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
+
   // Add the x-axis.
   svg.append("g")
       .attr("class", "x_axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.svg.axis().scale(x).orient("bottom"));
+      //.call(d3.svg.axis().scale(x).orient("bottom"));
+      .call(xAxis);
   // Add the y-axis.
   svg.append("g")
       .attr("class", "y_axis")
-      .call(d3.svg.axis().scale(y).orient("left"));
+      //.call(d3.svg.axis().scale(y).orient("left"));
+      .call(yAxis);
+
+
   // Add the points!
   svg.selectAll(".point")
       .data(dataset)
