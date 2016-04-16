@@ -42,7 +42,7 @@ var ychange = function() {
       .attr("d", d3.svg.symbol().type("circle"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
 
-  //pts.exit().transition().attr("old").remove();
+  pts.exit().transition().attr("old").remove();
 
 };
 
@@ -120,13 +120,28 @@ d3.csv('car.csv', function(data) {
       .attr("class", "y_axis")
       .call(yAxis);
 
+  // add the tooltip area to the webpage
+  var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
   // Add the points
   svg.selectAll(".point")
       .data(dataset)
     .enter().append("path")
       .attr("class", "point")
       .attr("d", d3.svg.symbol().type("circle"))
-      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
-
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; })
+      //.attr("test", function(d) {return d["name"]})
+      .on("mouseover", function(d) {
+          d3.select('#hovered').text(d["name"]);
+          //attr("text", function() { return d["name"]; });
+      })
+      //.on("mouseout", function(d) {
+      //    tooltip.transition()
+      //         .duration(500)
+      //         .style("opacity", 0);
+      //});
   });
+
 
