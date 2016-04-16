@@ -90,6 +90,18 @@ d3.csv('car.csv', function(data) {
   sel1 = d3.select("#sel-x").node().value;
   sel2 = d3.select("#sel-y").node().value;
 
+  //var mpg_min = d3.select("#mpg_min").attr("type","text").attr("value",0).attr("size",10);
+  document.getElementById('mpg-min').setAttribute('type','text');
+  document.getElementById('mpg-min').setAttribute('value','0');
+  document.getElementById('mpg-min').setAttribute('size','10');
+
+  document.getElementById('mpg-max').setAttribute('type','text');
+  document.getElementById('mpg-max').setAttribute('value','30');
+  document.getElementById('mpg-max').setAttribute('size','10');
+
+  mpg_min = d3.select("#mpg-min").node().value;
+  mpg_max = d3.select("#mpg-max").node().value;
+
   data.forEach(function(d){
 
     dataset.push({
@@ -104,11 +116,16 @@ d3.csv('car.csv', function(data) {
     });
 
   });
+
+  new_dataset = dataset.filter(function (row) {
+  return row.mpg <= mpg_max &&
+         row.mpg >= mpg_min;
+  });
   
   //Draw the plot once with default values:
   // Compute the scales’ domains.
-  x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
-  y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
+  x.domain(d3.extent(new_dataset, function(d) { return d[sel1]; })).nice();
+  y.domain(d3.extent(new_dataset, function(d) { return d[sel2]; })).nice();
 
   // Add the x-axis.
   svg.append("g")
@@ -127,7 +144,7 @@ d3.csv('car.csv', function(data) {
 
   // Add the points
   svg.selectAll(".point")
-      .data(dataset)
+      .data(new_dataset)
     .enter().append("path")
       .attr("class", "point")
       .attr("d", d3.svg.symbol().type("circle"))
