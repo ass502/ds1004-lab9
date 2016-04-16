@@ -1,9 +1,9 @@
 var xchange = function() {
 
-  var new_sel1 = this.value
+  sel1 = this.value
   
   //Compute x scale domain
-  x.domain(d3.extent(dataset, function(d) { return d[new_sel1]; })).nice();
+  x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
 
   //Change the x axis
   svg.select(".x_axis") 
@@ -12,6 +12,11 @@ var xchange = function() {
   //Join new data with old elements
   var pts = svg.selectAll(".point").data(dataset);
 
+  pts.attr("class", "point")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
+
+  /*
   //Update old elements as needed
   pts.attr("class", "update").remove();
 
@@ -20,7 +25,7 @@ var xchange = function() {
       .attr("class", "point")
       .attr("d", d3.svg.symbol().type("triangle-up"))
       .attr("transform", function(d) { return "translate(" + x(d[new_sel1]) + "," + y(d[sel2]) + ")"; });
-
+  */
   //pts.remove();
 
   //pts.exit().remove();
@@ -42,29 +47,20 @@ var xchange = function() {
 
 var ychange = function() {
 
-  //console.log(10)
 
-  var new_sel2 = this.value
+  sel2 = this.value
   //Compute y scale domain
-  y.domain(d3.extent(dataset, function(d) { return d[new_sel2]; })).nice();
+  y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
 
   svg.select(".y_axis") // change the x axis
     .call(yAxis);
 
-  /*
-  //Add the y axis
-  svg.append("g")
-      .attr("class", "y_axis")
-      .call(d3.svg.axis().scale(y).orient("left"));
-  */
+  //Join new data with old elements
+  var pts = svg.selectAll(".point").data(dataset);
 
-  //Add the points
-  svg.selectAll(".point")
-      .data(dataset)
-    .enter().append("path")
-      .attr("class", "point")
+  pts.attr("class", "point")
       .attr("d", d3.svg.symbol().type("triangle-up"))
-      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[new_sel2]) + ")"; });
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
 
 };
 
@@ -144,8 +140,7 @@ d3.csv('car.csv', function(data) {
       //.call(d3.svg.axis().scale(y).orient("left"));
       .call(yAxis);
 
-
-  // Add the points!
+  // Add the points
   svg.selectAll(".point")
       .data(dataset)
     .enter().append("path")
