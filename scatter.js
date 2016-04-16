@@ -1,35 +1,31 @@
 var xchange = function() {
 
-  console.log(5)
-
   var new_sel1 = this.value
   //Compute x scale domain
   x.domain(d3.extent(dataset, function(d) { return d[new_sel1]; })).nice();
-  //Add the x-axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.svg.axis().scale(x).orient("bottom"));
-  //Add the points!
-  svg.selectAll(".point")
-      .data(dataset)
-    .enter().append("path")
-      .attr("class", "point")
-      .attr("d", d3.svg.symbol().type("triangle-up"))
-      .attr("transform", function(d) { return "translate(" + x(d[new_sel1]) + "," + y(d[sel2]) + ")"; });
+
+  //var xaxis = d3.select('.plot').select('svg').select('.x axis').selectAll('.tick').data(10)
+
+  var xaxis = svg.select("g")
+  //.select(".x_axis").selectAll(".tick")
+
+  console.log(xaxis)
+
+
+
 };
 
 
 var ychange = function() {
 
-  console.log(10)
+  //console.log(10)
 
   var new_sel2 = this.value
   //Compute y scale domain
   y.domain(d3.extent(dataset, function(d) { return d[new_sel2]; })).nice();
   //Add the y axis
   svg.append("g")
-      .attr("class", "y axis")
+      .attr("class", "y_axis")
       .call(d3.svg.axis().scale(y).orient("left"));
   //Add the points
   svg.selectAll(".point")
@@ -42,6 +38,11 @@ var ychange = function() {
 
 
 //Start building the page
+
+//Make sel1 and sel2 global variables
+var sel1 = 0
+var sel2 = 0
+
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -61,7 +62,6 @@ d3.csv('car.csv', function(data) {
   var columnNames = Object.keys(data[0]);
   columnNames.splice(0,1);
   columnNames.splice(columnNames.length-1);
-  console.log(columnNames)
 
   var listX = d3.select("#sel-x").on('change',xchange).selectAll("option").data(columnNames).enter().append("option").text(function(d){return d;})
       .attr("value",function(d){return d;});
@@ -70,8 +70,8 @@ d3.csv('car.csv', function(data) {
       .attr("value",function(d){return d;});
 
   //draw the plot once with default values
-  var sel1 = d3.select("#sel-x").node().value;
-  var sel2 = d3.select("#sel-y").node().value;
+  sel1 = d3.select("#sel-x").node().value;
+  sel2 = d3.select("#sel-y").node().value;
 
   data.forEach(function(d){
 
@@ -94,12 +94,12 @@ d3.csv('car.csv', function(data) {
   y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
   // Add the x-axis.
   svg.append("g")
-      .attr("class", "x axis")
+      .attr("class", "x_axis")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.svg.axis().scale(x).orient("bottom"));
   // Add the y-axis.
   svg.append("g")
-      .attr("class", "y axis")
+      .attr("class", "y_axis")
       .call(d3.svg.axis().scale(y).orient("left"));
   // Add the points!
   svg.selectAll(".point")
