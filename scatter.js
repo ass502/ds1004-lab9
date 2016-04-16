@@ -124,8 +124,8 @@ d3.csv('car.csv', function(data) {
   
   //Draw the plot once with default values:
   // Compute the scales’ domains.
-  x.domain(d3.extent(new_dataset, function(d) { return d[sel1]; })).nice();
-  y.domain(d3.extent(new_dataset, function(d) { return d[sel2]; })).nice();
+  x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
+  y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
 
   // Add the x-axis.
   svg.append("g")
