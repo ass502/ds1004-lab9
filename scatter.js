@@ -5,13 +5,37 @@ var xchange = function() {
   //Compute x scale domain
   x.domain(d3.extent(dataset, function(d) { return d[new_sel1]; })).nice();
 
-
-  svg.select(".x_axis") // change the x axis
+  //Change the x axis
+  svg.select(".x_axis") 
     .call(xAxis);
 
-  //console.log(xaxis)
+  //Join new data with old elements
+  var pts = svg.selectAll(".point").data(dataset);
 
+  //Update old elements as needed
+  pts.attr("class", "update").remove();
 
+  //Enter: create new elements
+  pts.enter().append("path")
+      .attr("class", "point")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) { return "translate(" + x(d[new_sel1]) + "," + y(d[sel2]) + ")"; });
+
+  //pts.remove();
+
+  //pts.exit().remove();
+
+  /*
+  // Add the points!
+  svg.selectAll(".point")
+      .data(dataset)
+    .enter().append("path")
+      .attr("class", "point")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) { return "translate(" + x(d[new_sel1]) + "," + y(d[sel2]) + ")"; });
+
+   */   
+  //svg.selectAll('.point').remove()
 
 };
 
