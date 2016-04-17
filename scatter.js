@@ -3,22 +3,22 @@ var xchange = function() {
   sel1 = this.value
   
   //Compute x scale domain
-  x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
+  x.domain(d3.extent(new_dataset, function(d) { return d[sel1]; })).nice();
 
   //Change the x axis
   svg.select(".x_axis") 
     .call(xAxis);
 
   //Join new data with old elements
-  var pts = svg.selectAll(".point").data(dataset);
+  var pts = svg.selectAll(".point").data(new_dataset);
 
-  //pts.enter().append("class", "old");
+  pts.enter().append("class", "old");
 
   pts.attr("class", "point")
       .attr("d", d3.svg.symbol().type("circle"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
 
-  //pts.exit().transition().attr("old").remove();
+  pts.exit().transition().attr("old").remove();
 
 };
 
@@ -28,15 +28,15 @@ var ychange = function() {
 
   sel2 = this.value
   //Compute y scale domain
-  y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
+  y.domain(d3.extent(new_dataset, function(d) { return d[sel2]; })).nice();
 
   svg.select(".y_axis") // change the x axis
     .call(yAxis);
 
   //Join new data with old elements
-  var pts = svg.selectAll(".point").data(dataset);
+  var pts = svg.selectAll(".point").data(new_dataset);
 
-  //pts.enter().append("class", "old");
+  pts.enter().append("class", "old");
 
   pts.attr("class", "point")
       .attr("d", d3.svg.symbol().type("circle"))
@@ -44,6 +44,95 @@ var ychange = function() {
 
   pts.exit().transition().attr("old").remove();
 
+};
+
+
+var set_mpg = function(){
+
+  mpg_min = d3.select("#mpg-min").node().value;
+  mpg_max = d3.select("#mpg-max").node().value;
+
+  console.log(mpg_max)
+  console.log(mpg_min)
+
+  new_dataset = dataset.filter(function (row) {
+  return row.mpg <= mpg_max &&
+         row.mpg >= mpg_min;
+  });
+
+
+  //This needs cleaning up - probably the enter, exit, etc. framework?
+
+  //Draw the plot
+  // Compute the scales’ domains.
+  x.domain(d3.extent(new_dataset, function(d) { return d[sel1]; })).nice();
+  y.domain(d3.extent(new_dataset, function(d) { return d[sel2]; })).nice();
+
+  // Add the x-axis.
+  /*svg.append("g")
+      .attr("class", "x_axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+  // Add the y-axis.
+  svg.append("g")
+      .attr("class", "y_axis")
+      .call(yAxis);*/
+
+  //Change the x axis
+  svg.select(".x_axis") 
+    .call(xAxis);
+
+  svg.select(".y_axis") // change the x axis
+    .call(yAxis);
+
+  // Add the points
+  /*
+  svg.selectAll(".point")
+      .data(new_dataset)
+    .enter().append("path")
+      .attr("class", "point")
+      .attr("d", d3.svg.symbol().type("circle"))
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; })
+      //.attr("test", function(d) {return d["name"]})
+      .on("mouseover", function(d) {
+          d3.select('#hovered').text('Car name: ' + d["name"]);
+      })
+      .on("mouseout", function(d){
+          d3.select('#hovered').text('Roll over a point to see it\'s car name.');
+          //console.log(10)
+      });
+  */
+
+  var pts = svg.selectAll(".point")
+      .data(new_dataset);
+
+    pts.enter().append("path")
+      .attr("class", "point")
+      .attr("d", d3.svg.symbol().type("circle"))
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; })
+      //.attr("test", function(d) {return d["name"]})
+      .on("mouseover", function(d) {
+          d3.select('#hovered').text('Car name: ' + d["name"]);
+      })
+      .on("mouseout", function(d){
+          d3.select('#hovered').text('Roll over a point to see it\'s car name.');
+          //console.log(10)
+      });
+
+  pts.exit().remove();
+  
+  /*
+  //Join new data with old elements
+  var pts = svg.selectAll(".point").data(new_dataset);
+
+  pts.enter().append("class", "old");
+
+  pts.attr("class", "point")
+      .attr("d", d3.svg.symbol().type("circle"))
+      .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; });
+
+  pts.exit().transition().attr("old").remove();
+  */
 };
 
 
@@ -90,6 +179,7 @@ d3.csv('car.csv', function(data) {
   sel1 = d3.select("#sel-x").node().value;
   sel2 = d3.select("#sel-y").node().value;
 
+  /*
   //var mpg_min = d3.select("#mpg_min").attr("type","text").attr("value",0).attr("size",10);
   document.getElementById('mpg-min').setAttribute('type','text');
   document.getElementById('mpg-min').setAttribute('value','0');
@@ -98,7 +188,12 @@ d3.csv('car.csv', function(data) {
   document.getElementById('mpg-max').setAttribute('type','text');
   document.getElementById('mpg-max').setAttribute('value','30');
   document.getElementById('mpg-max').setAttribute('size','10');
+  */
 
+  //Create a button variable that calls the set_mpg function everytime the button is clicked
+  var button = d3.select("#update").on('click',set_mpg)
+
+  //Set these up temporarily? not sure if we can get around them being global
   mpg_min = d3.select("#mpg-min").node().value;
   mpg_max = d3.select("#mpg-max").node().value;
 
@@ -124,8 +219,8 @@ d3.csv('car.csv', function(data) {
   
   //Draw the plot once with default values:
   // Compute the scales’ domains.
-  x.domain(d3.extent(dataset, function(d) { return d[sel1]; })).nice();
-  y.domain(d3.extent(dataset, function(d) { return d[sel2]; })).nice();
+  x.domain(d3.extent(new_dataset, function(d) { return d[sel1]; })).nice();
+  y.domain(d3.extent(new_dataset, function(d) { return d[sel2]; })).nice();
 
   // Add the x-axis.
   svg.append("g")
@@ -149,13 +244,11 @@ d3.csv('car.csv', function(data) {
       .attr("class", "point")
       .attr("d", d3.svg.symbol().type("circle"))
       .attr("transform", function(d) { return "translate(" + x(d[sel1]) + "," + y(d[sel2]) + ")"; })
-      //.attr("test", function(d) {return d["name"]})
       .on("mouseover", function(d) {
           d3.select('#hovered').text('Car name: ' + d["name"]);
       })
       .on("mouseout", function(d){
           d3.select('#hovered').text('Roll over a point to see it\'s car name.');
-          //console.log(10)
       });
   });
 
